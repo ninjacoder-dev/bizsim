@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    /* ===================== VARIABLES ===================== */
     :root {
       --bg:        #060810;
       --bg2:       #0d1120;
@@ -62,7 +61,6 @@
     .screen { display: none; min-height: 100vh; }
     .screen.active { display: flex; }
 
-    /* ===================== SCREEN: INTRO ===================== */
     #screen-intro {
       flex-direction: column;
       align-items: center;
@@ -136,7 +134,6 @@
       color: #fff;
     }
 
-    /* ── Config Worker ── */
     .worker-config {
       background: rgba(99,102,241,0.07);
       border: 1px solid rgba(99,102,241,0.25);
@@ -167,11 +164,11 @@
       margin-top: 8px;
     }
 
-    .worker-status.ok  { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
-    .worker-status.err { background: rgba(239,68,68,0.12);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
-    .worker-status.idle{ background: rgba(100,116,139,0.12);color: var(--muted); border: 1px solid var(--border); }
+    .worker-status.ok   { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .worker-status.err  { background: rgba(239,68,68,0.12);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+    .worker-status.idle { background: rgba(100,116,139,0.12);color: var(--muted); border: 1px solid var(--border); }
 
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; }
     .dot.pulse { animation: pulse-dot 1.5s infinite; }
 
     label {
@@ -236,10 +233,7 @@
       color: #fff;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(99,102,241,0.4);
-    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
 
     .btn-secondary {
       background: var(--bg3);
@@ -248,14 +242,9 @@
     }
 
     .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    /* ===================== SCREEN: GAME ===================== */
+    /* GAME SCREEN */
     #screen-game { flex-direction: column; }
 
     .topbar {
@@ -273,15 +262,8 @@
       gap: 16px;
     }
 
-    .topbar-brand {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      color: #fff;
-    }
-
+    .topbar-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #fff; }
     .topbar-brand span { color: var(--accent); }
-
     .topbar-right { display: flex; align-items: center; gap: 12px; }
 
     .turn-badge {
@@ -356,7 +338,7 @@
     .stat-value.gold { color: var(--gold); }
 
     .stat-delta { font-size: 11px; margin-top: 2px; }
-    .delta-up { color: var(--green); }
+    .delta-up   { color: var(--green); }
     .delta-down { color: var(--red); }
 
     .feed-panel {
@@ -372,11 +354,7 @@
       margin-bottom: 20px;
     }
 
-    .feed-header h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-    }
+    .feed-header h2 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
 
     .event-group { margin-bottom: 32px; }
 
@@ -486,11 +464,7 @@
       margin-bottom: 14px;
     }
 
-    .action-textarea {
-      resize: none;
-      min-height: 80px;
-      font-size: 13px;
-    }
+    .action-textarea { resize: none; min-height: 80px; font-size: 13px; }
 
     .actions-list { margin-bottom: 12px; }
 
@@ -633,11 +607,7 @@
       gap: 8px;
     }
 
-    .btn-play:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(99,102,241,0.4);
-    }
-
+    .btn-play:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
     .btn-play:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .empty-feed { text-align: center; padding: 60px 20px; color: var(--muted); }
@@ -696,7 +666,6 @@
     .modal-box p  { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
     .modal-btn-row { display: flex; gap: 10px; }
 
-    /* btn test worker */
     .btn-test {
       background: none;
       border: 1px solid rgba(99,102,241,0.3);
@@ -708,7 +677,20 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .btn-test:hover { border-color: var(--accent2); background: rgba(99,102,241,0.1); }
+
+    /* Error box */
+    .error-box {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--red);
+      margin-top: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -716,7 +698,7 @@
 
 <div id="app">
 
-  <!-- ========== SCREEN: INTRO ========== -->
+  <!-- SCREEN INTRO -->
   <div id="screen-intro" class="screen active">
     <div class="logo-badge">BizSim AI · Cloudflare Worker</div>
     <h1 class="main-title">BIZSIM</h1>
@@ -725,7 +707,6 @@
     <div class="intro-card">
       <h2>🚀 Lancez votre entreprise fictive</h2>
 
-      <!-- ── Configuration Worker ── -->
       <div class="worker-config">
         <div class="wc-label">
           🔒 Backend Proxy (Cloudflare Worker)
@@ -766,7 +747,7 @@
     </div>
   </div>
 
-  <!-- ========== SCREEN: GAME ========== -->
+  <!-- SCREEN GAME -->
   <div id="screen-game" class="screen">
 
     <div class="topbar">
@@ -840,6 +821,8 @@
             <input type="text" id="custom-turn-game" placeholder="Personnalisé...">
             <span>ans/mois/sem</span>
           </div>
+          <!-- Error box inline -->
+          <div class="error-box" id="game-error"></div>
           <button class="btn-play" id="btn-play" onclick="playTurn()">
             ▶ Simuler le tour
           </button>
@@ -897,7 +880,7 @@ let state = {
   companyDesc: "",
   currentDate: "",
   turnDuration: "1 mois",
-  workerUrl: "https://bizsim.asr791096.workers.dev/",
+  workerUrl: "",
   actions: [],
   stats: {
     ca: null, valuation: null, sharePrice: null,
@@ -912,37 +895,62 @@ let currentTurnDuration = "1 mois";
 
 /* =============================================
    TEST WORKER
+   Envoie un vrai mini-appel OpenRouter via le Worker
+   et vérifie qu'on reçoit bien choices[0].message.content
    ============================================= */
 async function testWorker() {
   const url = document.getElementById('workerUrl').value.trim();
-  const statusEl = document.getElementById('worker-status');
 
   if (!url) {
     setWorkerStatus('err', '⚠ Entrez d\'abord l\'URL du Worker');
     return;
   }
 
+  // Normalise l'URL (retire slash final)
+  const cleanUrl = url.replace(/\/$/, '');
+  document.getElementById('workerUrl').value = cleanUrl;
+
   setWorkerStatus('idle', '⏳ Test en cours…', true);
 
   try {
-    // On envoie un mini-prompt de test
-    const res = await fetch(url, {
+    const res = await fetch(cleanUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        
-        messages: [{ role: "user", content: "Réponds uniquement: OK" }],
+        messages: [{ role: "user", content: "Réponds uniquement le mot: OK" }],
         max_tokens: 10
       })
     });
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
+    // Récupère le body même en cas d'erreur HTTP pour avoir le message
+    let data;
+    try { data = await res.json(); } catch { data = {}; }
+
+    if (!res.ok) {
+      const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`;
+      throw new Error(errMsg);
+    }
+
+    if (data.error) {
+      throw new Error(data.error.message || JSON.stringify(data.error));
+    }
+
+    // Vérifie la structure de réponse OpenRouter/OpenAI
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      throw new Error("Réponse inattendue du Worker : " + JSON.stringify(data).slice(0, 120));
+    }
 
     setWorkerStatus('ok', '✓ Worker connecté et opérationnel');
+    // Sauvegarde l'URL testée et validée
+    localStorage.setItem('bizsim_worker_url', cleanUrl);
+
   } catch(e) {
-    setWorkerStatus('err', '✗ Erreur : ' + e.message);
+    let msg = e.message;
+    // Cas typique : CORS ou réseau → Failed to fetch
+    if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('fetch')) {
+      msg = 'Impossible de joindre le Worker. Vérifie l\'URL et les headers CORS dans ton Worker.';
+    }
+    setWorkerStatus('err', '✗ ' + msg);
   }
 }
 
@@ -956,18 +964,15 @@ function setWorkerStatus(type, text, pulse = false) {
    INTRO → GAME
    ============================================= */
 function startGame() {
-  const workerUrl = document.getElementById('workerUrl').value.trim();
+  const workerUrl = document.getElementById('workerUrl').value.trim().replace(/\/$/, '');
   const name      = document.getElementById('companyName').value.trim();
   const desc      = document.getElementById('companyDesc').value.trim();
   const turn      = document.getElementById('customTurn').value.trim()
                     || document.getElementById('turnDuration').value;
   const date      = document.getElementById('startDate').value.trim() || "Janvier 2025";
 
-  if (!workerUrl) {
-    alert("Entrez l'URL de votre Cloudflare Worker.");
-    return;
-  }
-  if (!name)          { alert("Donnez un nom à votre entreprise."); return; }
+  if (!workerUrl) { alert("Entrez l'URL de votre Cloudflare Worker."); return; }
+  if (!name)      { alert("Donnez un nom à votre entreprise."); return; }
   if (desc.length < 20) { alert("Décrivez votre entreprise plus précisément."); return; }
 
   state.workerUrl     = workerUrl;
@@ -1012,6 +1017,7 @@ function resetGame() {
   document.getElementById('history-log').innerHTML     =
     '<div class="log-line"><span class="log-turn">Tour 0</span><span>Entreprise fondée</span></div>';
   document.getElementById('ipo-section').style.display = 'none';
+  document.getElementById('game-error').style.display  = 'none';
 
   showScreen('screen-intro');
 }
@@ -1072,10 +1078,11 @@ async function playTurn() {
   const duration  = customVal || currentTurnDuration;
 
   if (!actions.length) {
-    alert("Ajoutez au moins une action avant de simuler le tour.");
+    showGameError("Ajoutez au moins une action avant de simuler le tour.");
     return;
   }
 
+  hideGameError();
   setLoading(true);
   state.turn++;
 
@@ -1085,11 +1092,22 @@ async function playTurn() {
     applyTurn(parsed, duration);
   } catch(e) {
     console.error(e);
-    alert("Erreur lors de la simulation : " + e.message);
     state.turn--;
+    showGameError("Erreur lors de la simulation : " + e.message);
   } finally {
     setLoading(false);
   }
+}
+
+function showGameError(msg) {
+  const el = document.getElementById('game-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideGameError() {
+  const el = document.getElementById('game-error');
+  el.style.display = 'none';
 }
 
 /* =============================================
@@ -1161,7 +1179,7 @@ Sois cohérent avec l'historique. Les chiffres doivent évoluer progressivement.
 }
 
 /* =============================================
-   APPEL AU WORKER CLOUDFLARE
+   APPEL AU WORKER
    ============================================= */
 async function callWorker(prompt) {
   const loadingMsgs = [
@@ -1182,23 +1200,37 @@ async function callWorker(prompt) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
         temperature: 0.85
       })
     });
 
+    // On lit le JSON même si statut non-2xx pour récupérer le message d'erreur
+    let data;
+    try { data = await res.json(); } catch { data = {}; }
+
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `HTTP ${res.status}`);
+      const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`;
+      throw new Error(errMsg);
     }
 
-    const data = await res.json();
+    if (data.error) {
+      throw new Error(data.error.message || JSON.stringify(data.error));
+    }
 
-    if (data.error) throw new Error(data.error.message);
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      throw new Error("Réponse inattendue du modèle. Vérifie le Worker et la clé OpenRouter.");
+    }
 
     return data.choices[0].message.content;
+
+  } catch(e) {
+    // Améliore le message "Failed to fetch" (typiquement CORS ou réseau)
+    if (e.message === 'Failed to fetch' || e.message.includes('NetworkError')) {
+      throw new Error("Impossible de joindre le Worker. Vérifie l'URL et les headers CORS.");
+    }
+    throw e;
   } finally {
     clearInterval(interval);
   }
@@ -1209,11 +1241,16 @@ async function callWorker(prompt) {
    ============================================= */
 function parseAIResponse(raw) {
   try {
-    return JSON.parse(raw.replace(/```json|```/g, '').trim());
+    // Retire les éventuels blocs ```json ... ```
+    const cleaned = raw.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
+    return JSON.parse(cleaned);
   } catch {
+    // Tente d'extraire un JSON brut depuis le texte
     const match = raw.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error("Réponse IA invalide");
+    if (match) {
+      try { return JSON.parse(match[0]); } catch {}
+    }
+    throw new Error("Réponse IA invalide — le modèle n'a pas renvoyé de JSON correct.");
   }
 }
 
@@ -1257,13 +1294,13 @@ function applyTurn(data, duration) {
     updateDelta('delta-share', data.sharePriceRaw, oldStats.sharePriceRaw);
     document.getElementById('ipo-section').style.display = 'block';
     document.getElementById('ipo-badge').innerHTML =
-      `📈 En bourse — <span id="ipo-ticker">${data.stats.ticker || 'IPO'}</span>`;
-    document.getElementById('stat-status').textContent  = 'Cotée 📈';
+      `📈 En bourse — <span id="ipo-ticker">${escHtml(data.stats.ticker || 'IPO')}</span>`;
+    document.getElementById('stat-status').textContent = 'Cotée 📈';
     document.getElementById('stat-status').className   = 'stat-value gold';
   } else {
-    document.getElementById('stat-share').textContent   = '—';
-    document.getElementById('stat-status').textContent  = 'Privée';
-    document.getElementById('stat-status').className    = 'stat-value';
+    document.getElementById('stat-share').textContent  = '—';
+    document.getElementById('stat-status').textContent = 'Privée';
+    document.getElementById('stat-status').className   = 'stat-value';
   }
 
   document.getElementById('stat-employees').textContent =
@@ -1273,7 +1310,6 @@ function applyTurn(data, duration) {
   addHistoryLog(state.turn, data.summary);
 
   if (!wasPublic && data.stats.isPublic) {
-    document.getElementById('ipo-val').textContent = data.stats.valuation;
     document.getElementById('ipo-modal-text').textContent =
       `${state.companyName} entre en bourse sous le ticker ${data.stats.ticker} ! Valorisation : ${data.stats.valuation}.`;
     document.getElementById('ipo-modal').classList.add('show');
@@ -1290,8 +1326,8 @@ function updateDelta(deltaId, newRaw, oldRaw) {
   if (!el || !newRaw || !oldRaw) { if (el) el.textContent = ''; return; }
   const diff = newRaw - oldRaw;
   const pct  = ((diff / oldRaw) * 100).toFixed(1);
-  el.textContent  = `${diff >= 0 ? '+' : ''}${pct}% vs tour précédent`;
-  el.className    = 'stat-delta ' + (diff >= 0 ? 'delta-up' : 'delta-down');
+  el.textContent = `${diff >= 0 ? '+' : ''}${pct}% vs tour précédent`;
+  el.className   = 'stat-delta ' + (diff >= 0 ? 'delta-up' : 'delta-down');
 }
 
 /* =============================================
@@ -1316,13 +1352,13 @@ function renderEvents(events, summary) {
   sumCard.innerHTML = `<h3>📊 Bilan du tour</h3><p style="font-size:13px;color:var(--text)">${escHtml(summary)}</p>`;
   group.appendChild(sumCard);
 
-  events.forEach(ev => {
+  (events || []).forEach(ev => {
     const card = document.createElement('div');
-    card.className = `event-card type-${ev.type}`;
+    card.className = `event-card type-${ev.type || 'neutral'}`;
     card.innerHTML = `
       <div class="event-meta">
         <span class="event-date">📅 ${escHtml(ev.date)}</span>
-        <span class="event-tag tag-${ev.type}">${escHtml(ev.tag)}</span>
+        <span class="event-tag tag-${ev.type || 'neutral'}">${escHtml(ev.tag)}</span>
       </div>
       <div class="event-text">${escHtml(ev.text)}</div>`;
     group.appendChild(card);
@@ -1363,23 +1399,25 @@ function closeIpoModal() {
 }
 
 /* =============================================
-   EVENT LISTENERS
+   INIT
    ============================================= */
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('action-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.ctrlKey) addAction();
   });
+
   document.getElementById('custom-turn-game')?.addEventListener('input', () => {
     if (document.getElementById('custom-turn-game').value.trim()) {
       document.querySelectorAll('.turn-opt').forEach(o => o.classList.remove('selected'));
     }
   });
-  // Sauvegarde l'URL du worker dans localStorage
+
+  // Restore saved worker URL
   const savedUrl = localStorage.getItem('bizsim_worker_url');
   if (savedUrl) document.getElementById('workerUrl').value = savedUrl;
 
   document.getElementById('workerUrl')?.addEventListener('change', () => {
-    localStorage.setItem('bizsim_worker_url', document.getElementById('workerUrl').value.trim());
+    localStorage.setItem('bizsim_worker_url', document.getElementById('workerUrl').value.trim().replace(/\/$/, ''));
   });
 });
 </script>
