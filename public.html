@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BizSim — Simulateur d'Entreprise IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===================== VARIABLES ===================== */
+    :root {
+      --bg:        #060810;
+      --bg2:       #0d1120;
+      --bg3:       #111827;
+      --border:    #1e2d4a;
+      --accent:    #3b82f6;
+      --accent2:   #6366f1;
+      --green:     #10b981;
+      --red:       #ef4444;
+      --gold:      #f59e0b;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --card:      #0f1929;
+    }
+
+    /* ===================== RESET ===================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===================== NOISE OVERLAY ===================== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ===================== GRID BG ===================== */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===================== LAYOUT ===================== */
+    #app { position: relative; z-index: 1; }
+
+    /* ===================== SCREENS ===================== */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; }
+
+    /* ===================== SCREEN: INTRO ===================== */
+    #screen-intro {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .logo-badge::before {
+      content: '◆';
+      font-size: 8px;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    h1.main-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -3px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sub-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 48px;
+    }
+
+    .intro-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 580px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .intro-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    textarea, input, select {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      resize: vertical;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+
+    textarea { min-height: 120px; }
+
+    select option { background: var(--bg2); }
+
+    .turn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      width: 100%;
+      margin-top: 28px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* ===================== SCREEN: GAME ===================== */
+    #screen-game {
+      flex-direction: column;
+    }
+
+    /* ---- TOP BAR ---- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6,8,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .topbar-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .topbar-brand span { color: var(--accent); }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .turn-badge {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .turn-badge b { color: var(--text); }
+
+    .company-name-bar {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--accent);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ---- MAIN LAYOUT ---- */
+    .game-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      grid-template-rows: auto 1fr;
+      gap: 0;
+      flex: 1;
+      min-height: calc(100vh - 60px);
+    }
+
+    @media (max-width: 900px) {
+      .game-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    /* ---- STATS BAR ---- */
+    .stats-bar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-cell {
+      padding: 16px 24px;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-cell:last-child { border-right: none; }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-value.positive { color: var(--green); }
+    .stat-value.negative { color: var(--red); }
+    .stat-value.gold { color: var(--gold); }
+
+    .stat-delta {
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .delta-up { color: var(--green); }
+    .delta-down { color: var(--red); }
+
+    /* ---- FEED PANEL ---- */
+    .feed-panel {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: calc(100vh - 60px - 72px);
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .feed-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* ---- EVENT CARD ---- */
+    .event-group { margin-bottom: 32px; }
+
+    .event-turn-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .event-turn-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .event-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      animation: slideIn 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .event-card.type-good::before { background: var(--green); }
+    .event-card.type-bad::before { background: var(--red); }
+    .event-card.type-neutral::before { background: var(--accent); }
+    .event-card.type-special::before { background: var(--gold); }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .event-date {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .event-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .tag-good { background: rgba(16,185,129,0.15); color: var(--green); }
+    .tag-bad { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-neutral { background: rgba(59,130,246,0.15); color: var(--accent); }
+    .tag-special { background: rgba(245,158,11,0.15); color: var(--gold); }
+
+    .event-text {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    /* ---- SUMMARY CARD ---- */
+    .summary-card {
+      background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(99,102,241,0.08));
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .summary-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--accent2);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .summary-item { display: flex; justify-content: space-between; }
+    .summary-item .val { color: var(--green); font-weight: 500; }
+
+    /* ---- SIDEBAR ---- */
+    .sidebar {
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-section {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-title {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ---- ACTION AREA ---- */
+    .action-textarea {
+      resize: none;
+      min-height: 80px;
+      font-size: 13px;
+    }
+
+    .actions-list {
+      margin-bottom: 12px;
+    }
+
+    .action-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      animation: slideIn 0.2s ease;
+    }
+
+    .action-pill-text { flex: 1; color: var(--text); }
+
+    .action-pill-del {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0 4px;
+      font-size: 16px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .action-pill-del:hover { color: var(--red); }
+
+    .btn-add-action {
+      background: var(--bg3);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 8px;
+      width: 100%;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      transition: all 0.2s;
+      margin-bottom: 14px;
+    }
+
+    .btn-add-action:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ---- TURN SELECTOR ---- */
+    .turn-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .turn-opt {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--muted);
+    }
+
+    .turn-opt:hover { border-color: var(--accent); color: var(--accent); }
+    .turn-opt.selected { background: rgba(59,130,246,0.15); border-color: var(--accent); color: var(--accent); }
+
+    .custom-turn-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .custom-turn-row input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .custom-turn-row span { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+    /* ---- IPO BADGE ---- */
+    .ipo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--gold);
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ---- LOADING ---- */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6,8,16,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .loading-overlay.show { display: flex; }
+
+    .loader-ring {
+      width: 60px;
+      height: 60px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .loader-sub {
+      font-size: 12px;
+      color: var(--border);
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ---- BTN PLAY ---- */
+    .btn-play {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-play:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+    }
+
+    .btn-play:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ---- EMPTY STATE ---- */
+    .empty-feed {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-feed .icon { font-size: 48px; margin-bottom: 16px; }
+
+    .empty-feed p { font-size: 13px; line-height: 1.8; }
+
+    /* ---- CHART (mini) ---- */
+    .mini-chart {
+      width: 100%;
+      height: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mini-chart svg { width: 100%; height: 100%; }
+
+    /* ---- HISTORY LOG ---- */
+    .history-log {
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .history-log::-webkit-scrollbar { width: 4px; }
+    .history-log::-webkit-scrollbar-track { background: transparent; }
+    .history-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .log-line {
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(30,45,74,0.5);
+      display: flex;
+      gap: 8px;
+    }
+
+    .log-line .log-turn { color: var(--accent); min-width: 50px; }
+
+    /* ---- SCROLLBAR ---- */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* ---- MODAL ---- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+    }
+    .modal-box h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--gold); }
+    .modal-box p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+    .modal-btn-row { display: flex; gap: 10px; }
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<div id="app">
+
+  <!-- ========== SCREEN: INTRO ========== -->
+  <div id="screen-intro" class="screen active">
+    <div class="logo-badge">BizSim AI · Powered by Llama 3.3 70B</div>
+    <h1 class="main-title">BIZSIM</h1>
+    <p class="sub-title">Simulateur d'Entreprise par Intelligence Artificielle</p>
+
+    <div class="intro-card">
+      <h2>🚀 Lancez votre entreprise fictive</h2>
+
+      <label>Nom de votre entreprise</label>
+      <input type="text" id="companyName" placeholder="Ex: NovaTech Solutions" maxlength="50">
+
+      <label>Décrivez votre entreprise et votre vision</label>
+      <textarea id="companyDesc" placeholder="Ex: Une startup spécialisée dans les logiciels de comptabilité pour PME. Notre cible sont les entrepreneurs indépendants en France. Nous commençons avec 50 000€ de capital et 2 associés..."></textarea>
+
+      <label>Avance de temps par tour</label>
+      <div class="turn-row">
+        <select id="turnDuration">
+          <option value="1 semaine">1 semaine</option>
+          <option value="1 mois" selected>1 mois</option>
+          <option value="3 mois">3 mois (trimestre)</option>
+          <option value="6 mois">6 mois</option>
+          <option value="1 an">1 an</option>
+        </select>
+        <input type="text" id="customTurn" placeholder="Ex: 2 ans (personnalisé)">
+      </div>
+
+      <label>Date de départ fictive</label>
+      <input type="text" id="startDate" placeholder="Ex: Janvier 2025" value="Janvier 2025">
+
+      <button class="btn btn-primary" onclick="startGame()">
+        ◆ Démarrer la simulation
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN: GAME ========== -->
+  <div id="screen-game" class="screen">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="topbar-brand">Biz<span>Sim</span></div>
+        <div class="company-name-bar" id="topbar-company">—</div>
+      </div>
+      <div class="topbar-right">
+        <div class="turn-badge">Tour <b id="topbar-turn">0</b></div>
+        <div class="turn-badge" id="topbar-date">—</div>
+        <button class="btn btn-secondary" style="width:auto;padding:6px 14px;margin:0;font-size:12px;" onclick="resetGame()">↩ Nouveau</button>
+      </div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+      <div class="stat-cell">
+        <div class="stat-label">Chiffre d'Affaires</div>
+        <div class="stat-value" id="stat-ca">—</div>
+        <div class="stat-delta" id="delta-ca"></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Valorisation</div>
+        <div class="stat-value" id="stat-val">—</div>
+        <div class="stat-delta" id="delta-val"></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Valeur de l'Action</div>
+        <div class="stat-value gold" id="stat-share">—</div>
+        <div class="stat-delta" id="delta-share"></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Statut</div>
+        <div class="stat-value" id="stat-status" style="font-size:14px">Privée</div>
+        <div class="stat-delta" id="stat-employees"></div>
+      </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="game-layout">
+
+      <!-- FEED -->
+      <div class="feed-panel" id="feed-panel">
+        <div class="feed-header">
+          <h2>📰 Journal de bord</h2>
+        </div>
+        <div id="feed-content">
+          <div class="empty-feed">
+            <div class="icon">🏢</div>
+            <p>Votre entreprise est fondée.<br>Définissez vos actions pour le prochain tour<br>et lancez la simulation.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+
+        <!-- ACTIONS -->
+        <div class="sidebar-section">
+          <div class="sidebar-title">Actions du tour</div>
+          <div class="actions-list" id="actions-list"></div>
+          <textarea class="action-textarea" id="action-input" placeholder="Ex: Recruter un développeur senior&#10;Ex: Lancer une campagne marketing LinkedIn&#10;Ex: Négocier avec un investisseur"></textarea>
+          <button class="btn-add-action" onclick="addAction()">+ Ajouter cette action</button>
+        </div>
+
+        <!-- AVANCE TEMPS -->
+        <div class="sidebar-section">
+          <div class="sidebar-title">Avance dans le temps</div>
+          <div class="turn-selector" id="turn-selector">
+            <div class="turn-opt" data-val="1 semaine" onclick="selectTurn(this)">1 sem</div>
+            <div class="turn-opt selected" data-val="1 mois" onclick="selectTurn(this)">1 mois</div>
+            <div class="turn-opt" data-val="3 mois" onclick="selectTurn(this)">3 mois</div>
+            <div class="turn-opt" data-val="1 an" onclick="selectTurn(this)">1 an</div>
+          </div>
+          <div class="custom-turn-row">
+            <input type="text" id="custom-turn-game" placeholder="Personnalisé...">
+            <span>ans/mois/sem</span>
+          </div>
+          <button class="btn-play" id="btn-play" onclick="playTurn()">
+            ▶ Simuler le tour
+          </button>
+        </div>
+
+        <!-- IPO -->
+        <div class="sidebar-section" id="ipo-section" style="display:none">
+          <div class="sidebar-title">Bourse</div>
+          <div class="ipo-badge" id="ipo-badge">
+            📈 En bourse — <span id="ipo-ticker">TICK</span>
+          </div>
+        </div>
+
+        <!-- HISTORIQUE -->
+        <div class="sidebar-section" style="flex:1">
+          <div class="sidebar-title">Historique</div>
+          <div class="history-log" id="history-log">
+            <div class="log-line"><span class="log-turn">Tour 0</span><span>Entreprise fondée</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="loader-ring"></div>
+  <div class="loader-text">L'IA simule votre tour…</div>
+  <div class="loader-sub" id="loading-sub">Analyse des actions en cours</div>
+</div>
+
+<!-- IPO MODAL -->
+<div class="modal-overlay" id="ipo-modal">
+  <div class="modal-box">
+    <h3>🎉 Introduction en Bourse !</h3>
+    <p id="ipo-modal-text">Votre entreprise entre en bourse ! Les analystes estiment votre valorisation à <b id="ipo-val">—</b>.</p>
+    <div class="modal-btn-row">
+      <button class="btn btn-secondary" style="margin:0" onclick="closeIpoModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =============================================
+   ⚙️ CONFIGURATION — REMPLACEZ PAR VOTRE CLÉ
+   ============================================= */
+const OPENROUTER_API_KEY = "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";
+const MODEL = "meta-llama/llama-3.3-70b-instruct";
+const SITE_URL = "https://bizsimulator.10xhosting.com";
+const SITE_NAME = "BizSim AI";
+
+/* =============================================
+   STATE
+   ============================================= */
+let state = {
+  turn: 0,
+  companyName: "",
+  companyDesc: "",
+  currentDate: "",
+  turnDuration: "1 mois",
+  actions: [],
+  stats: {
+    ca: null,
+    valuation: null,
+    sharePrice: null,
+    employees: 1,
+    isPublic: false,
+    ticker: null
+  },
+  history: [],
+  events: []
+};
+
+let actions = [];
+let currentTurnDuration = "1 mois";
+
+/* =============================================
+   INTRO → GAME
+   ============================================= */
+function startGame() {
+  const name = document.getElementById('companyName').value.trim();
+  const desc = document.getElementById('companyDesc').value.trim();
+  const turn = document.getElementById('customTurn').value.trim()
+    || document.getElementById('turnDuration').value;
+  const date = document.getElementById('startDate').value.trim() || "Janvier 2025";
+
+  if (!name) { alert("Donnez un nom à votre entreprise."); return; }
+  if (desc.length < 20) { alert("Décrivez votre entreprise plus précisément."); return; }
+
+  state.companyName = name;
+  state.companyDesc = desc;
+  state.turnDuration = turn;
+  state.currentDate = date;
+  currentTurnDuration = turn;
+
+  document.getElementById('topbar-company').textContent = name;
+  document.getElementById('topbar-turn').textContent = "0";
+  document.getElementById('topbar-date').textContent = date;
+
+  // Sync turn selector
+  syncTurnSelector(turn);
+
+  showScreen('screen-game');
+}
+
+function resetGame() {
+  if (!confirm("Recommencer une nouvelle simulation ?")) return;
+  state = { turn:0, companyName:"", companyDesc:"", currentDate:"", turnDuration:"1 mois",
+    actions:[], stats:{ ca:null, valuation:null, sharePrice:null, employees:1, isPublic:false, ticker:null },
+    history:[], events:[] };
+  actions = [];
+  document.getElementById('actions-list').innerHTML = '';
+  document.getElementById('feed-content').innerHTML = `<div class="empty-feed"><div class="icon">🏢</div><p>Votre entreprise est fondée.<br>Définissez vos actions pour le prochain tour<br>et lancez la simulation.</p></div>`;
+  document.getElementById('stat-ca').textContent = "—";
+  document.getElementById('stat-val').textContent = "—";
+  document.getElementById('stat-share').textContent = "—";
+  document.getElementById('stat-status').textContent = "Privée";
+  document.getElementById('stat-employees').textContent = "";
+  document.getElementById('history-log').innerHTML = '<div class="log-line"><span class="log-turn">Tour 0</span><span>Entreprise fondée</span></div>';
+  document.getElementById('ipo-section').style.display = 'none';
+  showScreen('screen-intro');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* =============================================
+   TURN SELECTOR
+   ============================================= */
+function selectTurn(el) {
+  document.querySelectorAll('.turn-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  currentTurnDuration = el.dataset.val;
+  document.getElementById('custom-turn-game').value = '';
+}
+
+function syncTurnSelector(val) {
+  const opts = document.querySelectorAll('.turn-opt');
+  opts.forEach(o => {
+    if (o.dataset.val === val) { o.classList.add('selected'); }
+    else { o.classList.remove('selected'); }
+  });
+}
+
+/* =============================================
+   ACTIONS
+   ============================================= */
+function addAction() {
+  const input = document.getElementById('action-input');
+  const text = input.value.trim();
+  if (!text) return;
+  actions.push(text);
+  renderActions();
+  input.value = '';
+}
+
+function removeAction(i) {
+  actions.splice(i, 1);
+  renderActions();
+}
+
+function renderActions() {
+  const list = document.getElementById('actions-list');
+  if (actions.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = actions.map((a, i) => `
+    <div class="action-pill">
+      <span class="action-pill-text">${escHtml(a)}</span>
+      <button class="action-pill-del" onclick="removeAction(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+/* =============================================
+   PLAY TURN
+   ============================================= */
+async function playTurn() {
+  const customVal = document.getElementById('custom-turn-game').value.trim();
+  const duration = customVal || currentTurnDuration;
+
+  if (actions.length === 0) {
+    alert("Ajoutez au moins une action avant de simuler le tour.");
+    return;
+  }
+
+  setLoading(true);
+  state.turn++;
+
+  const prompt = buildPrompt(duration);
+
+  try {
+    const response = await callOpenRouter(prompt);
+    const parsed = parseAIResponse(response);
+    applyTurn(parsed, duration);
+  } catch(e) {
+    console.error(e);
+    alert("Erreur lors de la simulation : " + e.message);
+    state.turn--;
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* =============================================
+   PROMPT BUILDER
+   ============================================= */
+function buildPrompt(duration) {
+  const statsStr = state.stats.ca !== null ? `
+- Chiffre d'affaires actuel : ${state.stats.ca}
+- Valorisation : ${state.stats.valuation}
+- Prix de l'action : ${state.stats.sharePrice || "non cotée"}
+- Employés : ${state.stats.employees}
+- Statut boursier : ${state.stats.isPublic ? "cotée en bourse (ticker: "+state.stats.ticker+")" : "société privée"}` : "L'entreprise vient d'être fondée.";
+
+  const historyStr = state.history.slice(-5).map(h =>
+    `Tour ${h.turn} (${h.date}) : ${h.summary}`
+  ).join('\n');
+
+  const actionsStr = actions.map((a, i) => `${i+1}. ${a}`).join('\n');
+
+  return `Tu es un simulateur de business ultra-réaliste. Tu simules des entreprises fictives avec des données financières cohérentes.
+
+CONTEXTE DE L'ENTREPRISE :
+Nom : ${state.companyName}
+Description originale : ${state.companyDesc}
+
+SITUATION ACTUELLE :
+Date fictive courante : ${state.currentDate}
+Tour actuel : ${state.turn}
+Avance temporelle ce tour : ${duration}
+${statsStr}
+
+HISTORIQUE RÉCENT :
+${historyStr || "Premier tour"}
+
+ACTIONS DÉCIDÉES PAR LE JOUEUR CE TOUR :
+${actionsStr}
+
+INSTRUCTIONS :
+Simule ce qui se passe pendant cette période de ${duration}. Génère des événements réalistes (positifs, négatifs, neutres, surprises). Calcule ou estime les métriques financières.
+
+Réponds UNIQUEMENT avec un JSON valide, sans markdown, sans texte avant ou après. Format exact :
+{
+  "newDate": "string (nouvelle date fictive après avance de ${duration})",
+  "summary": "string (résumé du tour en 1 phrase)",
+  "events": [
+    {
+      "date": "string (date fictive de l'événement)",
+      "type": "good|bad|neutral|special",
+      "tag": "string (ex: Marketing, RH, Finance, Juridique, Stratégie, Marché, IPO...)",
+      "text": "string (description de l'événement, 2-4 phrases)"
+    }
+  ],
+  "stats": {
+    "ca": "string (ex: 45 000 € ou 1,2 M€)",
+    "valuation": "string (ex: 500 000 € ou 12 M€)",
+    "sharePrice": "string|null (null si non cotée, sinon ex: 24,50 €)",
+    "employees": number,
+    "isPublic": boolean,
+    "ticker": "string|null (null si non cotée, sinon ex: NVTK)"
+  },
+  "caRaw": number,
+  "valuationRaw": number,
+  "sharePriceRaw": number|null
+}
+
+Sois cohérent avec l'historique. Les chiffres doivent évoluer progressivement et de façon réaliste. Génère entre 3 et 6 événements variés.`;
+}
+
+/* =============================================
+   OPENROUTER API CALL
+   ============================================= */
+async function callOpenRouter(prompt) {
+  const loadingMsgs = [
+    "Analyse des décisions stratégiques…",
+    "Calcul des impacts financiers…",
+    "Génération des événements du marché…",
+    "Finalisation des métriques…"
+  ];
+  let msgIdx = 0;
+  const msgEl = document.getElementById('loading-sub');
+  const interval = setInterval(() => {
+    msgEl.textContent = loadingMsgs[msgIdx % loadingMsgs.length];
+    msgIdx++;
+  }, 2200);
+
+  try {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+        "HTTP-Referer": SITE_URL,
+        "X-Title": SITE_NAME,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 2000,
+        temperature: 0.85
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } finally {
+    clearInterval(interval);
+  }
+}
+
+/* =============================================
+   PARSE AI RESPONSE
+   ============================================= */
+function parseAIResponse(raw) {
+  try {
+    // Strip possible markdown fences
+    const clean = raw.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch(e) {
+    // Try to extract JSON from within
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error("Réponse IA invalide : " + e.message);
+  }
+}
+
+/* =============================================
+   APPLY TURN TO STATE
+   ============================================= */
+function applyTurn(data, duration) {
+  const oldStats = { ...state.stats };
+
+  // Update state
+  state.currentDate = data.newDate || state.currentDate;
+  state.stats.ca = data.stats.ca;
+  state.stats.valuation = data.stats.valuation;
+  state.stats.sharePrice = data.stats.sharePrice;
+  state.stats.employees = data.stats.employees;
+  state.stats.isPublic = data.stats.isPublic;
+  state.stats.ticker = data.stats.ticker;
+
+  const wasPublic = oldStats.isPublic;
+
+  // History
+  state.history.push({
+    turn: state.turn,
+    date: state.currentDate,
+    summary: data.summary,
+    actions: [...actions]
+  });
+
+  // Clear actions
+  actions = [];
+  renderActions();
+
+  // Update UI
+  document.getElementById('topbar-turn').textContent = state.turn;
+  document.getElementById('topbar-date').textContent = state.currentDate;
+
+  updateStatCell('stat-ca', data.stats.ca, 'delta-ca', data.caRaw, oldStats.caRaw);
+  updateStatCell('stat-val', data.stats.valuation, 'delta-val', data.valuationRaw, oldStats.valuationRaw);
+
+  if (data.stats.isPublic && data.stats.sharePrice) {
+    document.getElementById('stat-share').textContent = data.stats.sharePrice;
+    updateDelta('delta-share', data.sharePriceRaw, oldStats.sharePriceRaw);
+    document.getElementById('ipo-section').style.display = 'block';
+    document.getElementById('ipo-badge').innerHTML = `📈 En bourse — <span id="ipo-ticker">${data.stats.ticker || 'IPO'}</span>`;
+    document.getElementById('stat-status').textContent = 'Cotée 📈';
+    document.getElementById('stat-status').className = 'stat-value gold';
+  } else {
+    document.getElementById('stat-share').textContent = '—';
+    document.getElementById('stat-status').textContent = 'Privée';
+    document.getElementById('stat-status').className = 'stat-value';
+  }
+
+  document.getElementById('stat-employees').textContent =
+    `${data.stats.employees} employé${data.stats.employees > 1 ? 's' : ''}`;
+
+  // Render events
+  renderEvents(data.events, data.summary);
+
+  // History log
+  addHistoryLog(state.turn, data.summary);
+
+  // IPO modal
+  if (!wasPublic && data.stats.isPublic) {
+    document.getElementById('ipo-val').textContent = data.stats.valuation;
+    document.getElementById('ipo-modal-text').textContent =
+      `${state.companyName} entre en bourse sous le ticker ${data.stats.ticker} ! Valorisation estimée : ${data.stats.valuation}.`;
+    document.getElementById('ipo-modal').classList.add('show');
+  }
+}
+
+function updateStatCell(cellId, displayVal, deltaId, newRaw, oldRaw) {
+  document.getElementById(cellId).textContent = displayVal || '—';
+  updateDelta(deltaId, newRaw, oldRaw);
+}
+
+function updateDelta(deltaId, newRaw, oldRaw) {
+  const el = document.getElementById(deltaId);
+  if (!el) return;
+  if (!newRaw || !oldRaw) { el.textContent = ''; return; }
+  const diff = newRaw - oldRaw;
+  const pct = ((diff / oldRaw) * 100).toFixed(1);
+  el.textContent = `${diff >= 0 ? '+' : ''}${pct}% vs tour précédent`;
+  el.className = 'stat-delta ' + (diff >= 0 ? 'delta-up' : 'delta-down');
+}
+
+/* =============================================
+   RENDER EVENTS
+   ============================================= */
+function renderEvents(events, summary) {
+  const feed = document.getElementById('feed-content');
+
+  // Remove empty state
+  const empty = feed.querySelector('.empty-feed');
+  if (empty) empty.remove();
+
+  const group = document.createElement('div');
+  group.className = 'event-group';
+  group.style.animation = 'slideIn 0.4s ease';
+
+  // Turn label
+  const label = document.createElement('div');
+  label.className = 'event-turn-label';
+  label.textContent = `Tour ${state.turn} · ${state.currentDate}`;
+  group.appendChild(label);
+
+  // Summary card
+  const sumCard = document.createElement('div');
+  sumCard.className = 'summary-card';
+  sumCard.innerHTML = `<h3>📊 Bilan du tour</h3><p style="font-size:13px;color:var(--text)">${escHtml(summary)}</p>`;
+  group.appendChild(sumCard);
+
+  // Events
+  events.forEach(ev => {
+    const card = document.createElement('div');
+    card.className = `event-card type-${ev.type}`;
+    const tagClass = `tag-${ev.type}`;
+    card.innerHTML = `
+      <div class="event-meta">
+        <span class="event-date">📅 ${escHtml(ev.date)}</span>
+        <span class="event-tag ${tagClass}">${escHtml(ev.tag)}</span>
+      </div>
+      <div class="event-text">${escHtml(ev.text)}</div>
+    `;
+    group.appendChild(card);
+  });
+
+  // Prepend (newest first)
+  feed.insertBefore(group, feed.firstChild);
+  feed.scrollTop = 0;
+}
+
+/* =============================================
+   HISTORY LOG
+   ============================================= */
+function addHistoryLog(turn, summary) {
+  const log = document.getElementById('history-log');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-turn">Tour ${turn}</span><span>${escHtml(summary)}</span>`;
+  log.insertBefore(line, log.firstChild);
+}
+
+/* =============================================
+   UTILS
+   ============================================= */
+function escHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function setLoading(show) {
+  document.getElementById('loading').classList.toggle('show', show);
+  document.getElementById('btn-play').disabled = show;
+}
+
+function closeIpoModal() {
+  document.getElementById('ipo-modal').classList.remove('show');
+}
+
+// Allow Enter to add action
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('action-input')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) addAction();
+  });
+  document.getElementById('custom-turn-game')?.addEventListener('input', () => {
+    if (document.getElementById('custom-turn-game').value.trim()) {
+      document.querySelectorAll('.turn-opt').forEach(o => o.classList.remove('selected'));
+    }
+  });
+});
+</script>
+</body>
+</html>
