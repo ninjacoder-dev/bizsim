@@ -23,7 +23,6 @@
       --card:      #0f1929;
     }
 
-    /* ===================== RESET ===================== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -36,7 +35,6 @@
       overflow-x: hidden;
     }
 
-    /* ===================== NOISE OVERLAY ===================== */
     body::before {
       content: '';
       position: fixed;
@@ -47,7 +45,6 @@
       opacity: 0.4;
     }
 
-    /* ===================== GRID BG ===================== */
     .grid-bg {
       position: fixed;
       inset: 0;
@@ -60,10 +57,8 @@
       z-index: 0;
     }
 
-    /* ===================== LAYOUT ===================== */
     #app { position: relative; z-index: 1; }
 
-    /* ===================== SCREENS ===================== */
     .screen { display: none; min-height: 100vh; }
     .screen.active { display: flex; }
 
@@ -141,6 +136,44 @@
       color: #fff;
     }
 
+    /* ── Config Worker ── */
+    .worker-config {
+      background: rgba(99,102,241,0.07);
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .worker-config .wc-label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .worker-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-top: 8px;
+    }
+
+    .worker-status.ok  { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .worker-status.err { background: rgba(239,68,68,0.12);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+    .worker-status.idle{ background: rgba(100,116,139,0.12);color: var(--muted); border: 1px solid var(--border); }
+
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .dot.pulse { animation: pulse-dot 1.5s infinite; }
+
     label {
       display: block;
       font-size: 11px;
@@ -171,7 +204,6 @@
     }
 
     textarea { min-height: 120px; }
-
     select option { background: var(--bg2); }
 
     .turn-row {
@@ -224,11 +256,8 @@
     }
 
     /* ===================== SCREEN: GAME ===================== */
-    #screen-game {
-      flex-direction: column;
-    }
+    #screen-game { flex-direction: column; }
 
-    /* ---- TOP BAR ---- */
     .topbar {
       position: sticky;
       top: 0;
@@ -253,11 +282,7 @@
 
     .topbar-brand span { color: var(--accent); }
 
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
 
     .turn-badge {
       background: var(--bg3);
@@ -281,7 +306,6 @@
       white-space: nowrap;
     }
 
-    /* ---- MAIN LAYOUT ---- */
     .game-layout {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -296,7 +320,6 @@
       .sidebar { display: none; }
     }
 
-    /* ---- STATS BAR ---- */
     .stats-bar {
       grid-column: 1 / -1;
       display: grid;
@@ -332,15 +355,10 @@
     .stat-value.negative { color: var(--red); }
     .stat-value.gold { color: var(--gold); }
 
-    .stat-delta {
-      font-size: 11px;
-      margin-top: 2px;
-    }
-
+    .stat-delta { font-size: 11px; margin-top: 2px; }
     .delta-up { color: var(--green); }
     .delta-down { color: var(--red); }
 
-    /* ---- FEED PANEL ---- */
     .feed-panel {
       padding: 24px;
       overflow-y: auto;
@@ -360,7 +378,6 @@
       font-weight: 700;
     }
 
-    /* ---- EVENT CARD ---- */
     .event-group { margin-bottom: 32px; }
 
     .event-turn-label {
@@ -395,21 +412,19 @@
     .event-card::before {
       content: '';
       position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
+      left: 0; top: 0; bottom: 0;
       width: 3px;
       border-radius: 3px 0 0 3px;
     }
 
-    .event-card.type-good::before { background: var(--green); }
-    .event-card.type-bad::before { background: var(--red); }
+    .event-card.type-good::before    { background: var(--green); }
+    .event-card.type-bad::before     { background: var(--red); }
     .event-card.type-neutral::before { background: var(--accent); }
     .event-card.type-special::before { background: var(--gold); }
 
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .event-meta {
@@ -419,10 +434,7 @@
       margin-bottom: 8px;
     }
 
-    .event-date {
-      font-size: 11px;
-      color: var(--muted);
-    }
+    .event-date { font-size: 11px; color: var(--muted); }
 
     .event-tag {
       font-size: 10px;
@@ -432,18 +444,13 @@
       text-transform: uppercase;
     }
 
-    .tag-good { background: rgba(16,185,129,0.15); color: var(--green); }
-    .tag-bad { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-good    { background: rgba(16,185,129,0.15); color: var(--green); }
+    .tag-bad     { background: rgba(239,68,68,0.15);  color: var(--red); }
     .tag-neutral { background: rgba(59,130,246,0.15); color: var(--accent); }
     .tag-special { background: rgba(245,158,11,0.15); color: var(--gold); }
 
-    .event-text {
-      font-size: 13px;
-      line-height: 1.7;
-      color: var(--text);
-    }
+    .event-text { font-size: 13px; line-height: 1.7; color: var(--text); }
 
-    /* ---- SUMMARY CARD ---- */
     .summary-card {
       background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(99,102,241,0.08));
       border: 1px solid rgba(99,102,241,0.3);
@@ -460,17 +467,6 @@
       color: var(--accent2);
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      font-size: 12px;
-    }
-
-    .summary-item { display: flex; justify-content: space-between; }
-    .summary-item .val { color: var(--green); font-weight: 500; }
-
-    /* ---- SIDEBAR ---- */
     .sidebar {
       border-left: 1px solid var(--border);
       display: flex;
@@ -490,16 +486,13 @@
       margin-bottom: 14px;
     }
 
-    /* ---- ACTION AREA ---- */
     .action-textarea {
       resize: none;
       min-height: 80px;
       font-size: 13px;
     }
 
-    .actions-list {
-      margin-bottom: 12px;
-    }
+    .actions-list { margin-bottom: 12px; }
 
     .action-pill {
       display: flex;
@@ -545,7 +538,6 @@
 
     .btn-add-action:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ---- TURN SELECTOR ---- */
     .turn-selector {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -575,15 +567,9 @@
       margin-bottom: 14px;
     }
 
-    .custom-turn-row input {
-      flex: 1;
-      padding: 8px 12px;
-      font-size: 12px;
-    }
+    .custom-turn-row input { flex: 1; padding: 8px 12px; font-size: 12px; }
+    .custom-turn-row span  { font-size: 11px; color: var(--muted); white-space: nowrap; }
 
-    .custom-turn-row span { font-size: 11px; color: var(--muted); white-space: nowrap; }
-
-    /* ---- IPO BADGE ---- */
     .ipo-badge {
       display: inline-flex;
       align-items: center;
@@ -598,7 +584,6 @@
       justify-content: center;
     }
 
-    /* ---- LOADING ---- */
     .loading-overlay {
       display: none;
       position: fixed;
@@ -625,21 +610,11 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .loader-text {
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      color: var(--muted);
-    }
-
-    .loader-sub {
-      font-size: 12px;
-      color: var(--border);
-      animation: blink 1.5s infinite;
-    }
+    .loader-text { font-family: 'Syne', sans-serif; font-size: 16px; color: var(--muted); }
+    .loader-sub  { font-size: 12px; color: var(--border); animation: blink 1.5s infinite; }
 
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ---- BTN PLAY ---- */
     .btn-play {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: #fff;
@@ -665,28 +640,10 @@
 
     .btn-play:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ---- EMPTY STATE ---- */
-    .empty-feed {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
-    }
-
+    .empty-feed { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-feed .icon { font-size: 48px; margin-bottom: 16px; }
-
     .empty-feed p { font-size: 13px; line-height: 1.8; }
 
-    /* ---- CHART (mini) ---- */
-    .mini-chart {
-      width: 100%;
-      height: 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .mini-chart svg { width: 100%; height: 100%; }
-
-    /* ---- HISTORY LOG ---- */
     .history-log {
       max-height: 160px;
       overflow-y: auto;
@@ -707,13 +664,11 @@
 
     .log-line .log-turn { color: var(--accent); min-width: 50px; }
 
-    /* ---- SCROLLBAR ---- */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-    /* ---- MODAL ---- */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -724,7 +679,9 @@
       align-items: center;
       justify-content: center;
     }
+
     .modal-overlay.show { display: flex; }
+
     .modal-box {
       background: var(--card);
       border: 1px solid var(--border);
@@ -734,9 +691,24 @@
       width: 90%;
       text-align: center;
     }
+
     .modal-box h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--gold); }
-    .modal-box p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+    .modal-box p  { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
     .modal-btn-row { display: flex; gap: 10px; }
+
+    /* btn test worker */
+    .btn-test {
+      background: none;
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 6px;
+      color: var(--accent2);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-test:hover { border-color: var(--accent2); background: rgba(99,102,241,0.1); }
   </style>
 </head>
 <body>
@@ -746,12 +718,26 @@
 
   <!-- ========== SCREEN: INTRO ========== -->
   <div id="screen-intro" class="screen active">
-    <div class="logo-badge">BizSim AI · hermes 3 llama 3.1 405b</div>
+    <div class="logo-badge">BizSim AI · Cloudflare Worker</div>
     <h1 class="main-title">BIZSIM</h1>
     <p class="sub-title">Simulateur d'Entreprise par Intelligence Artificielle</p>
 
     <div class="intro-card">
       <h2>🚀 Lancez votre entreprise fictive</h2>
+
+      <!-- ── Configuration Worker ── -->
+      <div class="worker-config">
+        <div class="wc-label">
+          🔒 Backend Proxy (Cloudflare Worker)
+          <button class="btn-test" onclick="testWorker()">Tester</button>
+        </div>
+        <input type="text" id="workerUrl"
+          placeholder="https://bizsim.ton-compte.workers.dev"
+          style="margin:0;font-size:12px;padding:8px 12px;">
+        <div class="worker-status idle" id="worker-status">
+          <span class="dot"></span> Non testé
+        </div>
+      </div>
 
       <label>Nom de votre entreprise</label>
       <input type="text" id="companyName" placeholder="Ex: NovaTech Solutions" maxlength="50">
@@ -783,7 +769,6 @@
   <!-- ========== SCREEN: GAME ========== -->
   <div id="screen-game" class="screen">
 
-    <!-- TOP BAR -->
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:16px">
         <div class="topbar-brand">Biz<span>Sim</span></div>
@@ -796,7 +781,6 @@
       </div>
     </div>
 
-    <!-- STATS BAR -->
     <div class="stats-bar">
       <div class="stat-cell">
         <div class="stat-label">Chiffre d'Affaires</div>
@@ -820,10 +804,8 @@
       </div>
     </div>
 
-    <!-- MAIN LAYOUT -->
     <div class="game-layout">
 
-      <!-- FEED -->
       <div class="feed-panel" id="feed-panel">
         <div class="feed-header">
           <h2>📰 Journal de bord</h2>
@@ -836,25 +818,23 @@
         </div>
       </div>
 
-      <!-- SIDEBAR -->
       <div class="sidebar">
 
-        <!-- ACTIONS -->
         <div class="sidebar-section">
           <div class="sidebar-title">Actions du tour</div>
           <div class="actions-list" id="actions-list"></div>
-          <textarea class="action-textarea" id="action-input" placeholder="Ex: Recruter un développeur senior&#10;Ex: Lancer une campagne marketing LinkedIn&#10;Ex: Négocier avec un investisseur"></textarea>
+          <textarea class="action-textarea" id="action-input"
+            placeholder="Ex: Recruter un développeur senior&#10;Ex: Lancer une campagne marketing LinkedIn&#10;Ex: Négocier avec un investisseur"></textarea>
           <button class="btn-add-action" onclick="addAction()">+ Ajouter cette action</button>
         </div>
 
-        <!-- AVANCE TEMPS -->
         <div class="sidebar-section">
           <div class="sidebar-title">Avance dans le temps</div>
           <div class="turn-selector" id="turn-selector">
             <div class="turn-opt" data-val="1 semaine" onclick="selectTurn(this)">1 sem</div>
-            <div class="turn-opt selected" data-val="1 mois" onclick="selectTurn(this)">1 mois</div>
-            <div class="turn-opt" data-val="3 mois" onclick="selectTurn(this)">3 mois</div>
-            <div class="turn-opt" data-val="1 an" onclick="selectTurn(this)">1 an</div>
+            <div class="turn-opt selected" data-val="1 mois"  onclick="selectTurn(this)">1 mois</div>
+            <div class="turn-opt" data-val="3 mois"   onclick="selectTurn(this)">3 mois</div>
+            <div class="turn-opt" data-val="1 an"     onclick="selectTurn(this)">1 an</div>
           </div>
           <div class="custom-turn-row">
             <input type="text" id="custom-turn-game" placeholder="Personnalisé...">
@@ -865,7 +845,6 @@
           </button>
         </div>
 
-        <!-- IPO -->
         <div class="sidebar-section" id="ipo-section" style="display:none">
           <div class="sidebar-title">Bourse</div>
           <div class="ipo-badge" id="ipo-badge">
@@ -873,11 +852,13 @@
           </div>
         </div>
 
-        <!-- HISTORIQUE -->
         <div class="sidebar-section" style="flex:1">
           <div class="sidebar-title">Historique</div>
           <div class="history-log" id="history-log">
-            <div class="log-line"><span class="log-turn">Tour 0</span><span>Entreprise fondée</span></div>
+            <div class="log-line">
+              <span class="log-turn">Tour 0</span>
+              <span>Entreprise fondée</span>
+            </div>
           </div>
         </div>
 
@@ -899,7 +880,7 @@
 <div class="modal-overlay" id="ipo-modal">
   <div class="modal-box">
     <h3>🎉 Introduction en Bourse !</h3>
-    <p id="ipo-modal-text">Votre entreprise entre en bourse ! Les analystes estiment votre valorisation à <b id="ipo-val">—</b>.</p>
+    <p id="ipo-modal-text">Votre entreprise entre en bourse !</p>
     <div class="modal-btn-row">
       <button class="btn btn-secondary" style="margin:0" onclick="closeIpoModal()">Fermer</button>
     </div>
@@ -907,14 +888,6 @@
 </div>
 
 <script>
-/* =============================================
-   ⚙️ CONFIGURATION — REMPLACEZ PAR VOTRE CLÉ
-   ============================================= */
-const OPENROUTER_API_KEY = "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";/*THIS KEY AS NO CREDIT, SHE JUST WORKS WITH FREE MODEL.*/
-const MODEL = "hermes-3-llama-3.1-405b:free";
-const SITE_URL = "https://ninjacoder-dev.github.io/bizsim/";
-const SITE_NAME = "BizSim AI";
-
 /* =============================================
    STATE
    ============================================= */
@@ -924,66 +897,122 @@ let state = {
   companyDesc: "",
   currentDate: "",
   turnDuration: "1 mois",
+  workerUrl: "https://bizsim.asr791096.workers.dev/",
   actions: [],
   stats: {
-    ca: null,
-    valuation: null,
-    sharePrice: null,
-    employees: 1,
-    isPublic: false,
-    ticker: null
+    ca: null, valuation: null, sharePrice: null,
+    employees: 1, isPublic: false, ticker: null,
+    caRaw: null, valuationRaw: null, sharePriceRaw: null
   },
-  history: [],
-  events: []
+  history: []
 };
 
 let actions = [];
 let currentTurnDuration = "1 mois";
 
 /* =============================================
+   TEST WORKER
+   ============================================= */
+async function testWorker() {
+  const url = document.getElementById('workerUrl').value.trim();
+  const statusEl = document.getElementById('worker-status');
+
+  if (!url) {
+    setWorkerStatus('err', '⚠ Entrez d\'abord l\'URL du Worker');
+    return;
+  }
+
+  setWorkerStatus('idle', '⏳ Test en cours…', true);
+
+  try {
+    // On envoie un mini-prompt de test
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        
+        messages: [{ role: "user", content: "Réponds uniquement: OK" }],
+        max_tokens: 10
+      })
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    setWorkerStatus('ok', '✓ Worker connecté et opérationnel');
+  } catch(e) {
+    setWorkerStatus('err', '✗ Erreur : ' + e.message);
+  }
+}
+
+function setWorkerStatus(type, text, pulse = false) {
+  const el = document.getElementById('worker-status');
+  el.className = 'worker-status ' + type;
+  el.innerHTML = `<span class="dot${pulse ? ' pulse' : ''}"></span> ${escHtml(text)}`;
+}
+
+/* =============================================
    INTRO → GAME
    ============================================= */
 function startGame() {
-  const name = document.getElementById('companyName').value.trim();
-  const desc = document.getElementById('companyDesc').value.trim();
-  const turn = document.getElementById('customTurn').value.trim()
-    || document.getElementById('turnDuration').value;
-  const date = document.getElementById('startDate').value.trim() || "Janvier 2025";
+  const workerUrl = document.getElementById('workerUrl').value.trim();
+  const name      = document.getElementById('companyName').value.trim();
+  const desc      = document.getElementById('companyDesc').value.trim();
+  const turn      = document.getElementById('customTurn').value.trim()
+                    || document.getElementById('turnDuration').value;
+  const date      = document.getElementById('startDate').value.trim() || "Janvier 2025";
 
-  if (!name) { alert("Donnez un nom à votre entreprise."); return; }
+  if (!workerUrl) {
+    alert("Entrez l'URL de votre Cloudflare Worker.");
+    return;
+  }
+  if (!name)          { alert("Donnez un nom à votre entreprise."); return; }
   if (desc.length < 20) { alert("Décrivez votre entreprise plus précisément."); return; }
 
-  state.companyName = name;
-  state.companyDesc = desc;
-  state.turnDuration = turn;
-  state.currentDate = date;
+  state.workerUrl     = workerUrl;
+  state.companyName   = name;
+  state.companyDesc   = desc;
+  state.turnDuration  = turn;
+  state.currentDate   = date;
   currentTurnDuration = turn;
 
   document.getElementById('topbar-company').textContent = name;
-  document.getElementById('topbar-turn').textContent = "0";
-  document.getElementById('topbar-date').textContent = date;
+  document.getElementById('topbar-turn').textContent    = "0";
+  document.getElementById('topbar-date').textContent    = date;
 
-  // Sync turn selector
   syncTurnSelector(turn);
-
   showScreen('screen-game');
 }
 
 function resetGame() {
   if (!confirm("Recommencer une nouvelle simulation ?")) return;
-  state = { turn:0, companyName:"", companyDesc:"", currentDate:"", turnDuration:"1 mois",
-    actions:[], stats:{ ca:null, valuation:null, sharePrice:null, employees:1, isPublic:false, ticker:null },
-    history:[], events:[] };
+
+  state = {
+    turn: 0, companyName: "", companyDesc: "", currentDate: "",
+    turnDuration: "1 mois", workerUrl: "", actions: [],
+    stats: { ca: null, valuation: null, sharePrice: null,
+             employees: 1, isPublic: false, ticker: null,
+             caRaw: null, valuationRaw: null, sharePriceRaw: null },
+    history: []
+  };
   actions = [];
+
   document.getElementById('actions-list').innerHTML = '';
-  document.getElementById('feed-content').innerHTML = `<div class="empty-feed"><div class="icon">🏢</div><p>Votre entreprise est fondée.<br>Définissez vos actions pour le prochain tour<br>et lancez la simulation.</p></div>`;
-  document.getElementById('stat-ca').textContent = "—";
-  document.getElementById('stat-val').textContent = "—";
-  document.getElementById('stat-share').textContent = "—";
-  document.getElementById('stat-status').textContent = "Privée";
-  document.getElementById('stat-employees').textContent = "";
-  document.getElementById('history-log').innerHTML = '<div class="log-line"><span class="log-turn">Tour 0</span><span>Entreprise fondée</span></div>';
+  document.getElementById('feed-content').innerHTML = `
+    <div class="empty-feed">
+      <div class="icon">🏢</div>
+      <p>Votre entreprise est fondée.<br>Définissez vos actions pour le prochain tour<br>et lancez la simulation.</p>
+    </div>`;
+  document.getElementById('stat-ca').textContent       = "—";
+  document.getElementById('stat-val').textContent      = "—";
+  document.getElementById('stat-share').textContent    = "—";
+  document.getElementById('stat-status').textContent   = "Privée";
+  document.getElementById('stat-employees').textContent= "";
+  document.getElementById('history-log').innerHTML     =
+    '<div class="log-line"><span class="log-turn">Tour 0</span><span>Entreprise fondée</span></div>';
   document.getElementById('ipo-section').style.display = 'none';
+
   showScreen('screen-intro');
 }
 
@@ -1003,10 +1032,8 @@ function selectTurn(el) {
 }
 
 function syncTurnSelector(val) {
-  const opts = document.querySelectorAll('.turn-opt');
-  opts.forEach(o => {
-    if (o.dataset.val === val) { o.classList.add('selected'); }
-    else { o.classList.remove('selected'); }
+  document.querySelectorAll('.turn-opt').forEach(o => {
+    o.classList.toggle('selected', o.dataset.val === val);
   });
 }
 
@@ -1015,7 +1042,7 @@ function syncTurnSelector(val) {
    ============================================= */
 function addAction() {
   const input = document.getElementById('action-input');
-  const text = input.value.trim();
+  const text  = input.value.trim();
   if (!text) return;
   actions.push(text);
   renderActions();
@@ -1029,13 +1056,12 @@ function removeAction(i) {
 
 function renderActions() {
   const list = document.getElementById('actions-list');
-  if (actions.length === 0) { list.innerHTML = ''; return; }
+  if (!actions.length) { list.innerHTML = ''; return; }
   list.innerHTML = actions.map((a, i) => `
     <div class="action-pill">
       <span class="action-pill-text">${escHtml(a)}</span>
       <button class="action-pill-del" onclick="removeAction(${i})">×</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 /* =============================================
@@ -1043,9 +1069,9 @@ function renderActions() {
    ============================================= */
 async function playTurn() {
   const customVal = document.getElementById('custom-turn-game').value.trim();
-  const duration = customVal || currentTurnDuration;
+  const duration  = customVal || currentTurnDuration;
 
-  if (actions.length === 0) {
+  if (!actions.length) {
     alert("Ajoutez au moins une action avant de simuler le tour.");
     return;
   }
@@ -1053,11 +1079,9 @@ async function playTurn() {
   setLoading(true);
   state.turn++;
 
-  const prompt = buildPrompt(duration);
-
   try {
-    const response = await callOpenRouter(prompt);
-    const parsed = parseAIResponse(response);
+    const response = await callWorker(buildPrompt(duration));
+    const parsed   = parseAIResponse(response);
     applyTurn(parsed, duration);
   } catch(e) {
     console.error(e);
@@ -1077,11 +1101,13 @@ function buildPrompt(duration) {
 - Valorisation : ${state.stats.valuation}
 - Prix de l'action : ${state.stats.sharePrice || "non cotée"}
 - Employés : ${state.stats.employees}
-- Statut boursier : ${state.stats.isPublic ? "cotée en bourse (ticker: "+state.stats.ticker+")" : "société privée"}` : "L'entreprise vient d'être fondée.";
+- Statut boursier : ${state.stats.isPublic
+    ? "cotée en bourse (ticker: " + state.stats.ticker + ")"
+    : "société privée"}` : "L'entreprise vient d'être fondée.";
 
-  const historyStr = state.history.slice(-5).map(h =>
-    `Tour ${h.turn} (${h.date}) : ${h.summary}`
-  ).join('\n');
+  const historyStr = state.history.slice(-5)
+    .map(h => `Tour ${h.turn} (${h.date}) : ${h.summary}`)
+    .join('\n');
 
   const actionsStr = actions.map((a, i) => `${i+1}. ${a}`).join('\n');
 
@@ -1108,36 +1134,36 @@ Simule ce qui se passe pendant cette période de ${duration}. Génère des évé
 
 Réponds UNIQUEMENT avec un JSON valide, sans markdown, sans texte avant ou après. Format exact :
 {
-  "newDate": "string (nouvelle date fictive après avance de ${duration})",
+  "newDate": "string",
   "summary": "string (résumé du tour en 1 phrase)",
   "events": [
     {
-      "date": "string (date fictive de l'événement)",
+      "date": "string",
       "type": "good|bad|neutral|special",
       "tag": "string (ex: Marketing, RH, Finance, Juridique, Stratégie, Marché, IPO...)",
-      "text": "string (description de l'événement, 2-4 phrases)"
+      "text": "string (2-4 phrases)"
     }
   ],
   "stats": {
     "ca": "string (ex: 45 000 € ou 1,2 M€)",
     "valuation": "string (ex: 500 000 € ou 12 M€)",
-    "sharePrice": "string|null (null si non cotée, sinon ex: 24,50 €)",
+    "sharePrice": "string|null",
     "employees": number,
     "isPublic": boolean,
-    "ticker": "string|null (null si non cotée, sinon ex: NVTK)"
+    "ticker": "string|null"
   },
   "caRaw": number,
   "valuationRaw": number,
   "sharePriceRaw": number|null
 }
 
-Sois cohérent avec l'historique. Les chiffres doivent évoluer progressivement et de façon réaliste. Génère entre 3 et 6 événements variés.`;
+Sois cohérent avec l'historique. Les chiffres doivent évoluer progressivement. Génère entre 3 et 6 événements variés.`;
 }
 
 /* =============================================
-   OPENROUTER API CALL
+   APPEL AU WORKER CLOUDFLARE
    ============================================= */
-async function callOpenRouter(prompt) {
+async function callWorker(prompt) {
   const loadingMsgs = [
     "Analyse des décisions stratégiques…",
     "Calcul des impacts financiers…",
@@ -1145,23 +1171,18 @@ async function callOpenRouter(prompt) {
     "Finalisation des métriques…"
   ];
   let msgIdx = 0;
-  const msgEl = document.getElementById('loading-sub');
+  const msgEl    = document.getElementById('loading-sub');
   const interval = setInterval(() => {
     msgEl.textContent = loadingMsgs[msgIdx % loadingMsgs.length];
     msgIdx++;
   }, 2200);
 
   try {
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const res = await fetch(state.workerUrl, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-        "HTTP-Referer": SITE_URL,
-        "X-Title": SITE_NAME,
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: MODEL,
+        
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
         temperature: 0.85
@@ -1169,11 +1190,14 @@ async function callOpenRouter(prompt) {
     });
 
     if (!res.ok) {
-      const err = await res.json();
+      const err = await res.json().catch(() => ({}));
       throw new Error(err.error?.message || `HTTP ${res.status}`);
     }
 
     const data = await res.json();
+
+    if (data.error) throw new Error(data.error.message);
+
     return data.choices[0].message.content;
   } finally {
     clearInterval(interval);
@@ -1185,35 +1209,33 @@ async function callOpenRouter(prompt) {
    ============================================= */
 function parseAIResponse(raw) {
   try {
-    // Strip possible markdown fences
-    const clean = raw.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
-  } catch(e) {
-    // Try to extract JSON from within
+    return JSON.parse(raw.replace(/```json|```/g, '').trim());
+  } catch {
     const match = raw.match(/\{[\s\S]*\}/);
     if (match) return JSON.parse(match[0]);
-    throw new Error("Réponse IA invalide : " + e.message);
+    throw new Error("Réponse IA invalide");
   }
 }
 
 /* =============================================
-   APPLY TURN TO STATE
+   APPLY TURN
    ============================================= */
 function applyTurn(data, duration) {
   const oldStats = { ...state.stats };
 
-  // Update state
-  state.currentDate = data.newDate || state.currentDate;
-  state.stats.ca = data.stats.ca;
-  state.stats.valuation = data.stats.valuation;
-  state.stats.sharePrice = data.stats.sharePrice;
-  state.stats.employees = data.stats.employees;
-  state.stats.isPublic = data.stats.isPublic;
-  state.stats.ticker = data.stats.ticker;
+  state.currentDate         = data.newDate      || state.currentDate;
+  state.stats.ca            = data.stats.ca;
+  state.stats.valuation     = data.stats.valuation;
+  state.stats.sharePrice    = data.stats.sharePrice;
+  state.stats.employees     = data.stats.employees;
+  state.stats.isPublic      = data.stats.isPublic;
+  state.stats.ticker        = data.stats.ticker;
+  state.stats.caRaw         = data.caRaw;
+  state.stats.valuationRaw  = data.valuationRaw;
+  state.stats.sharePriceRaw = data.sharePriceRaw;
 
   const wasPublic = oldStats.isPublic;
 
-  // History
   state.history.push({
     turn: state.turn,
     date: state.currentDate,
@@ -1221,44 +1243,39 @@ function applyTurn(data, duration) {
     actions: [...actions]
   });
 
-  // Clear actions
   actions = [];
   renderActions();
 
-  // Update UI
   document.getElementById('topbar-turn').textContent = state.turn;
   document.getElementById('topbar-date').textContent = state.currentDate;
 
-  updateStatCell('stat-ca', data.stats.ca, 'delta-ca', data.caRaw, oldStats.caRaw);
-  updateStatCell('stat-val', data.stats.valuation, 'delta-val', data.valuationRaw, oldStats.valuationRaw);
+  updateStatCell('stat-ca',  data.stats.ca,        'delta-ca',    data.caRaw,         oldStats.caRaw);
+  updateStatCell('stat-val', data.stats.valuation,  'delta-val',   data.valuationRaw,  oldStats.valuationRaw);
 
   if (data.stats.isPublic && data.stats.sharePrice) {
     document.getElementById('stat-share').textContent = data.stats.sharePrice;
     updateDelta('delta-share', data.sharePriceRaw, oldStats.sharePriceRaw);
     document.getElementById('ipo-section').style.display = 'block';
-    document.getElementById('ipo-badge').innerHTML = `📈 En bourse — <span id="ipo-ticker">${data.stats.ticker || 'IPO'}</span>`;
-    document.getElementById('stat-status').textContent = 'Cotée 📈';
-    document.getElementById('stat-status').className = 'stat-value gold';
+    document.getElementById('ipo-badge').innerHTML =
+      `📈 En bourse — <span id="ipo-ticker">${data.stats.ticker || 'IPO'}</span>`;
+    document.getElementById('stat-status').textContent  = 'Cotée 📈';
+    document.getElementById('stat-status').className   = 'stat-value gold';
   } else {
-    document.getElementById('stat-share').textContent = '—';
-    document.getElementById('stat-status').textContent = 'Privée';
-    document.getElementById('stat-status').className = 'stat-value';
+    document.getElementById('stat-share').textContent   = '—';
+    document.getElementById('stat-status').textContent  = 'Privée';
+    document.getElementById('stat-status').className    = 'stat-value';
   }
 
   document.getElementById('stat-employees').textContent =
     `${data.stats.employees} employé${data.stats.employees > 1 ? 's' : ''}`;
 
-  // Render events
   renderEvents(data.events, data.summary);
-
-  // History log
   addHistoryLog(state.turn, data.summary);
 
-  // IPO modal
   if (!wasPublic && data.stats.isPublic) {
     document.getElementById('ipo-val').textContent = data.stats.valuation;
     document.getElementById('ipo-modal-text').textContent =
-      `${state.companyName} entre en bourse sous le ticker ${data.stats.ticker} ! Valorisation estimée : ${data.stats.valuation}.`;
+      `${state.companyName} entre en bourse sous le ticker ${data.stats.ticker} ! Valorisation : ${data.stats.valuation}.`;
     document.getElementById('ipo-modal').classList.add('show');
   }
 }
@@ -1270,21 +1287,18 @@ function updateStatCell(cellId, displayVal, deltaId, newRaw, oldRaw) {
 
 function updateDelta(deltaId, newRaw, oldRaw) {
   const el = document.getElementById(deltaId);
-  if (!el) return;
-  if (!newRaw || !oldRaw) { el.textContent = ''; return; }
+  if (!el || !newRaw || !oldRaw) { if (el) el.textContent = ''; return; }
   const diff = newRaw - oldRaw;
-  const pct = ((diff / oldRaw) * 100).toFixed(1);
-  el.textContent = `${diff >= 0 ? '+' : ''}${pct}% vs tour précédent`;
-  el.className = 'stat-delta ' + (diff >= 0 ? 'delta-up' : 'delta-down');
+  const pct  = ((diff / oldRaw) * 100).toFixed(1);
+  el.textContent  = `${diff >= 0 ? '+' : ''}${pct}% vs tour précédent`;
+  el.className    = 'stat-delta ' + (diff >= 0 ? 'delta-up' : 'delta-down');
 }
 
 /* =============================================
    RENDER EVENTS
    ============================================= */
 function renderEvents(events, summary) {
-  const feed = document.getElementById('feed-content');
-
-  // Remove empty state
+  const feed  = document.getElementById('feed-content');
   const empty = feed.querySelector('.empty-feed');
   if (empty) empty.remove();
 
@@ -1292,34 +1306,28 @@ function renderEvents(events, summary) {
   group.className = 'event-group';
   group.style.animation = 'slideIn 0.4s ease';
 
-  // Turn label
   const label = document.createElement('div');
-  label.className = 'event-turn-label';
+  label.className   = 'event-turn-label';
   label.textContent = `Tour ${state.turn} · ${state.currentDate}`;
   group.appendChild(label);
 
-  // Summary card
   const sumCard = document.createElement('div');
   sumCard.className = 'summary-card';
   sumCard.innerHTML = `<h3>📊 Bilan du tour</h3><p style="font-size:13px;color:var(--text)">${escHtml(summary)}</p>`;
   group.appendChild(sumCard);
 
-  // Events
   events.forEach(ev => {
     const card = document.createElement('div');
     card.className = `event-card type-${ev.type}`;
-    const tagClass = `tag-${ev.type}`;
     card.innerHTML = `
       <div class="event-meta">
         <span class="event-date">📅 ${escHtml(ev.date)}</span>
-        <span class="event-tag ${tagClass}">${escHtml(ev.tag)}</span>
+        <span class="event-tag tag-${ev.type}">${escHtml(ev.tag)}</span>
       </div>
-      <div class="event-text">${escHtml(ev.text)}</div>
-    `;
+      <div class="event-text">${escHtml(ev.text)}</div>`;
     group.appendChild(card);
   });
 
-  // Prepend (newest first)
   feed.insertBefore(group, feed.firstChild);
   feed.scrollTop = 0;
 }
@@ -1328,7 +1336,7 @@ function renderEvents(events, summary) {
    HISTORY LOG
    ============================================= */
 function addHistoryLog(turn, summary) {
-  const log = document.getElementById('history-log');
+  const log  = document.getElementById('history-log');
   const line = document.createElement('div');
   line.className = 'log-line';
   line.innerHTML = `<span class="log-turn">Tour ${turn}</span><span>${escHtml(summary)}</span>`;
@@ -1341,10 +1349,8 @@ function addHistoryLog(turn, summary) {
 function escHtml(s) {
   if (!s) return '';
   return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function setLoading(show) {
@@ -1356,15 +1362,24 @@ function closeIpoModal() {
   document.getElementById('ipo-modal').classList.remove('show');
 }
 
-// Allow Enter to add action
+/* =============================================
+   EVENT LISTENERS
+   ============================================= */
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('action-input')?.addEventListener('keydown', (e) => {
+  document.getElementById('action-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.ctrlKey) addAction();
   });
   document.getElementById('custom-turn-game')?.addEventListener('input', () => {
     if (document.getElementById('custom-turn-game').value.trim()) {
       document.querySelectorAll('.turn-opt').forEach(o => o.classList.remove('selected'));
     }
+  });
+  // Sauvegarde l'URL du worker dans localStorage
+  const savedUrl = localStorage.getItem('bizsim_worker_url');
+  if (savedUrl) document.getElementById('workerUrl').value = savedUrl;
+
+  document.getElementById('workerUrl')?.addEventListener('change', () => {
+    localStorage.setItem('bizsim_worker_url', document.getElementById('workerUrl').value.trim());
   });
 });
 </script>
